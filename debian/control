@@ -1,0 +1,18 @@
+Source: plates
+Section: education
+Priority: extra
+Maintainer: Dmitry Baryshev <dmitrymq@gmail.com>
+XSBC-Original-Maintainer: Dmitry Baryshev <dmitrymq@gmail.com>
+Uploaders: Dmitry Baryshev <dmitrymq@gmail.com>
+Build-Depends: debhelper (>= 9), qtbase5-dev, qttools5-dev-tools, imagemagick
+Standards-Version: 3.9.4
+Homepage: https://github.com/openalpr/openalpr
+#Vcs-Git: 
+#Vcs-Browser: 
+
+Package: plates
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Plates is an OpenALPR training utility
+ to manually find and mark license plates on photos

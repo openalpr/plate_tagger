@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Education;
+Exec=plates
+Icon=plates
+Terminal=false
+Name=OpenALPR training utility
+Comment=OpenALPR training utility

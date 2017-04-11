@@ -1,0 +1,26 @@
+#!/usr/bin/make -f
+
+DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+
+# Qt5
+export QT_SELECT := qt5
+
+%:
+	dh $@ --parallel
+
+override_dh_auto_configure:
+	qmake CONFIG+=release
+
+override_dh_auto_install:
+	install -D -m 755 plates $(CURDIR)/debian/plates/usr/bin/plates
+	strip $(CURDIR)/debian/plates/usr/bin/plates
+	# extract and install icons
+	$(CURDIR)/debian/extract-icons images/plates.ico plates | while read res; do \
+	    install -D -m 644 plates-$${res}.png $(CURDIR)/debian/plates/usr/share/icons/hicolor/$${res}/apps/plates.png; \
+	    rm -f plates-$${res}.png; \
+	done
+#	# install icons
+#	for i in 16 32 48 64 128 256; do install -D -m 644 plates-$${i}x$${i}.png $(CURDIR)/debian/plates/usr/share/icons/hicolor/$${i}x$${i}/apps/plates.png; done
+#	for i in 16 32 48 64 128 256; do rm -f plates-$${i}x$${i}.png; done
+	install -D -m 644 man/plates.1 $(CURDIR)/debian/plates/usr/share/man/man1/plates.1
+	install -D -m 644 plates.desktop $(CURDIR)/debian/plates/usr/share/applications/plates.desktop

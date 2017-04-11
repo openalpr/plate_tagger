@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PlateSelector</class>
+ <widget class="QDialog" name="PlateSelector">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>700</width>
+    <height>500</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>License plate selection</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <property name="verticalSpacing">
+    <number>10</number>
+   </property>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="spacing">
+      <number>6</number>
+     </property>
+     <item alignment="Qt::AlignTop">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Plate number:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPlainTextEdit" name="plainTextPlateNumber"/>
+     </item>
+     <item alignment="Qt::AlignTop">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Plate region:</string>
+       </property>
+      </widget>
+     </item>
+     <item alignment="Qt::AlignTop">
+      <widget class="QLineEdit" name="linePlateRegion">
+       <property name="maxLength">
+        <number>64</number>
+       </property>
+      </widget>
+     </item>
+     <item alignment="Qt::AlignTop">
+      <widget class="QCheckBox" name="checkLightOnDark">
+       <property name="text">
+        <string>Light-on-Dark letters</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>0</width>
+         <height>10</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Reset|QDialogButtonBox::RestoreDefaults|QDialogButtonBox::Save</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="ImageViewerPlateSelector" name="imageViewerPlateSelector" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>1</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ImageViewerPlateSelector</class>
+   <extends>QWidget</extends>
+   <header>imageviewerplateselector.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>plainTextPlateNumber</tabstop>
+  <tabstop>linePlateRegion</tabstop>
+  <tabstop>checkLightOnDark</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>PlateSelector</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>549</x>
+     <y>490</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>541</x>
+     <y>440</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>PlateSelector</receiver>
+   <slot>slotSave()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>521</x>
+     <y>490</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>503</x>
+     <y>431</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>helpRequested()</signal>
+   <receiver>PlateSelector</receiver>
+   <slot>slotHelp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>383</x>
+     <y>490</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>366</x>
+     <y>449</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>clicked(QAbstractButton*)</signal>
+   <receiver>PlateSelector</receiver>
+   <slot>slotClicked(QAbstractButton*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>202</x>
+     <y>490</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>198</x>
+     <y>440</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>plainTextPlateNumber</sender>
+   <signal>textChanged()</signal>
+   <receiver>PlateSelector</receiver>
+   <slot>slotCheckData()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>243</x>
+     <y>387</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>252</x>
+     <y>519</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slotSave()</slot>
+  <slot>slotCheckData()</slot>
+  <slot>slotHelp()</slot>
+  <slot>slotClicked(QAbstractButton*)</slot>
+ </slots>
+</ui>

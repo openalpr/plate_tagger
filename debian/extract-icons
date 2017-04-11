@@ -1,0 +1,30 @@
+#!/bin/sh -e
+
+if ! which identify >/dev/null 2>&1; then
+    echo "Fatal: 'identify' is not installed" >&2
+    exit 1
+fi
+
+if ! which convert >/dev/null 2>&1; then
+    echo "Fatal: 'convert' is not installed" >&2
+    exit 1
+fi
+
+ico="$1"
+template="$2"
+
+######################################
+
+identify "$ico" | while read str; do
+    name="$(echo "$str" | awk '{ print $1 }')"
+    res="$(echo "$str" | awk '{ print $3 }')"
+
+    if [ -z "$name" -o -z "$res" ]; then
+        echo "Cannot extract icons information" >&2
+        exit 1
+    fi
+
+    convert "$name" "$template-$res.png"
+
+    echo "$res"
+done
