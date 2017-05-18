@@ -27,8 +27,8 @@
         <key>CFBundleDisplayName</key>
         <string>OpenALPR Training Utility</string>
         <key>CFBundleShortVersionString</key>
-        <string>1.0.0</string>
+        <string>1.1.0</string>
         <key>CFBundleVersion</key>
-        <string>1.0.0</string>
+        <string>1.1.0</string>
 </dict>
 </plist>

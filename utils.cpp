@@ -1,9 +1,14 @@
 #include <QtWidgets>
+#include <QtGui>
 #include <QtCore>
 
 #include <cstdlib>
 
+#include "platefile.h"
 #include "utils.h"
+
+constexpr double BOUNDING_ENLARGE_WIDTH_FACTOR = 0.15;
+constexpr double BOUNDING_ENLARGE_HEIGHT_FACTOR = 0.25;
 
 QString Utils::helpString()
 {
@@ -79,6 +84,21 @@ QPoint Utils::fitPoint(const QRect &m_referenceRect, const QPoint &_pos)
         pos.setY(m_referenceRect.topLeft().y());
 
     return pos;
+}
+
+QRect Utils::selectionForPlate(const PlateFile &plateFile, const QImage &inImage)
+{
+    const QRect &boundingRect = plateFile.plateCorners().boundingRect();
+
+    // enlarge
+    QRect selection = boundingRect.adjusted(-BOUNDING_ENLARGE_WIDTH_FACTOR * boundingRect.width(),
+                                            -BOUNDING_ENLARGE_HEIGHT_FACTOR * boundingRect.height(),
+                                            BOUNDING_ENLARGE_WIDTH_FACTOR * boundingRect.width(),
+                                            BOUNDING_ENLARGE_HEIGHT_FACTOR * boundingRect.height());
+
+    selection &= inImage.rect();
+
+    return selection;
 }
 
 void Utils::help(const QString &message, QWidget *parent)

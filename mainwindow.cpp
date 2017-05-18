@@ -223,6 +223,14 @@ void MainWindow::slotOpenDirectory()
 
     qDebug("Loaded files: %d", m_imageFiles.size());
 
+    // enable some buttons when more than 1 image is loaded
+    QList<QPushButton *> buttons = QList<QPushButton *>()
+                                   << ui->pushPrevious
+                                   << ui->pushJumpTo;
+
+    foreach(QPushButton *button, buttons)
+        button->setEnabled(m_imageFiles.size() > 1);
+
     updateTaggedAndPlatesInformation();
 
     // load the next available image
@@ -297,7 +305,7 @@ void MainWindow::slotJumpTo()
     bool ok;
     int index = QInputDialog::getInt(this,
                                      tr("Jump To"),
-                                     tr("Image number:"),
+                                     tr("Image number (from %1 to %2):").arg(1).arg(m_imageFiles.size()),
                                      m_currentIndex+1,    // current value
                                      1,                   // min
                                      m_imageFiles.size(), // max

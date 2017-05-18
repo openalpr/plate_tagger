@@ -1,6 +1,6 @@
 #define MyAppName "OpenALPR Training Utility"
 #define MyAppPublisher "OpenALPR"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.1.0"
 #define MyAppTemplate "plates"
 #define MyAppExecutable MyAppTemplate + ".exe"
 

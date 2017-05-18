@@ -1,8 +1,12 @@
 #include <QtWidgets>
+#include <QtGui>
 
 #include <cstdio>
 
+#include "plateselector.h"
 #include "mainwindow.h"
+#include "platefile.h"
+#include "utils.h"
 
 static char messageTypeToChar(QtMsgType type)
 {
@@ -98,17 +102,85 @@ static void platesOutput(QtMsgType type, const QMessageLogContext &context, cons
         abort();
 }
 
+static bool tryPlatesArgument()
+{
+    int platesArgIndex = QCoreApplication::arguments().indexOf("--plates");
+
+    // not found or no YAML files specified
+    if(platesArgIndex < 0 || platesArgIndex >= QCoreApplication::arguments().size()-1)
+        return false;
+
+    qDebug("Loading specific plates");
+    platesArgIndex++;
+    int shown = 0;
+
+    while(platesArgIndex < QCoreApplication::arguments().size())
+    {
+        QString plateFilePath = QCoreApplication::arguments().at(platesArgIndex);
+
+        qDebug("Loading plate '%s'", qPrintable(plateFilePath));
+
+        QFileInfo plateFileInfo(plateFilePath);
+
+        if(plateFileInfo.exists())
+        {
+            PlateFile plateFile(plateFilePath);
+
+            if(plateFile.isValid())
+            {
+                QImage image(plateFileInfo.absolutePath() + QDir::separator() + plateFile.imageFile());
+
+                if(!image.isNull())
+                {
+                    shown++;
+
+                    const QRect &selection = Utils::selectionForPlate(plateFile, image);
+
+                    PlateSelector selector(image.copy(selection), PlateSelector::WithoutDeleteButton);
+
+                    selector.setSelectionRect(selection);
+                    selector.setPlateFile(plateFile);
+
+                    if(selector.exec() == PlateSelector::Accepted)
+                    {
+                        plateFile.setPlateCorners(selector.selectedPolygon());
+                        plateFile.setRegionCode(selector.plateRegion());
+                        plateFile.setPlateNumber(selector.plateNumber());
+                        plateFile.setPlateInverted(selector.lightOnDark());
+
+                        QString error;
+
+                        if(!plateFile.writeToStandaloneFile(&error))
+                        {
+                            Utils::error(QObject::tr("Cannot save YAML file. %1")
+                                         .arg(error.isEmpty()
+                                              ? QObject::tr("Unknown error")
+                                              : QObject::tr("Error: %1").arg(error)));
+                        }
+                    }
+                }
+            }
+        }
+
+        platesArgIndex++;
+    }
+
+    return shown;
+}
+
 int main(int argc, char *argv[])
 {
-    setbuf(stderr, 0);
-
     QCoreApplication::setApplicationName(TARGET_HUMAN_STRING);
     QCoreApplication::setOrganizationName("OpenALPR");
     QCoreApplication::setApplicationVersion(VERSION_STRING);
 
     QApplication app(argc, argv);
 
+    setbuf(stderr, nullptr);
     qInstallMessageHandler(platesOutput);
+
+    if(tryPlatesArgument())
+        return 0;
 
     MainWindow w;
     w.show();

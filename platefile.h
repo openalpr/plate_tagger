@@ -5,6 +5,8 @@
 #include <QString>
 #include <QList>
 
+#include "plates-yaml.h"
+
 class QTextStream;
 class QFileInfo;
 
@@ -14,15 +16,27 @@ using PlateFileList = QList<PlateFile>;
 class PlateFile
 {
 public:
+    PlateFile(const QString &platePath);
     PlateFile(const QString &platePathTemplate, int index);
 
     /*
      *  Overwrite a plate file with index 'index'
      */
-    bool writeToFile(int index, QString *error = nullptr) const;
+    bool writeToNumberedFile(int index, QString *error = nullptr);
 
     /*
-     *  Plate file template like "/data/car" from "/data/car.jpg"
+     *  Overwrite a standalone plate file
+     */
+    bool writeToStandaloneFile(QString *error = nullptr);
+
+    /*
+     *  Full path to the plate file
+     */
+    QString plateFile() const;
+
+    /*
+     *  Plate file template like "/data/car" from "/data/car.jpg". Empty
+     *  if the plate is loaded from the non-related YAML file (car.yaml for truck.jpg)
      */
     QString plateFileTemplate() const;
 
@@ -42,7 +56,9 @@ public:
     /*
      *  Some getters/setters
      */
+    QString imageFile() const;
     void setImageFile(const QString &imageFile);
+
     void setImageWidth(int imageWidth);
     void setImageHeight(int imageHeight);
 
@@ -70,16 +86,23 @@ public:
     static PlateFileList fromImageFile(const QString &fileTemplate);
 
 private:
+    bool writeToFile(const QString &yamlPath, QString *error);
+
+private:
     QString m_plateFileTemplate;
-    QString m_plateFile;
-    QString m_imageFile;
-    int m_imageWidth;
-    int m_imageHeight;
-    QString m_regionCode;
-    QString m_plateNumber;
+
+    // YAML properies. We store polygon separately as it needs parsing
+    YAML::Node m_yaml;
     QPolygon m_plateCorners;
-    bool m_plateInverted;
+    QString m_plateFile;
+    bool m_parsed;
 };
+
+inline
+QString PlateFile::plateFile() const
+{
+    return m_plateFile;
+}
 
 inline
 QString PlateFile::plateFileTemplate() const
@@ -90,51 +113,71 @@ QString PlateFile::plateFileTemplate() const
 inline
 bool PlateFile::isValid() const
 {
-    return m_imageWidth > 0
-            && m_imageHeight > 0
-            && !m_plateCorners.isEmpty();
+    return m_parsed
+            && m_yaml["image_width"]
+            && m_yaml["image_width"].as<int>() > 0
+            && m_yaml["image_height"]
+            && m_yaml["image_height"].as<int>() > 0;
+}
+
+inline
+QString PlateFile::imageFile() const
+{
+    return m_yaml["image_file"]
+            ? QString::fromUtf8(m_yaml["image_file"].as<std::string>().c_str())
+            : QString();
 }
 
 inline
 void PlateFile::setImageFile(const QString &imageFile)
 {
-    m_imageFile = imageFile;
+    m_yaml["image_file"] = imageFile.toStdString();
 }
 
 inline
 void PlateFile::setImageWidth(int imageWidth)
 {
-    m_imageWidth = imageWidth;
+    m_yaml["image_width"] = imageWidth;
 }
 
 inline
 void PlateFile::setImageHeight(int imageHeight)
 {
-    m_imageHeight = imageHeight;
+    m_yaml["image_height"] = imageHeight;
 }
 
 inline
 QString PlateFile::regionCode() const
 {
-    return m_regionCode;
+    return m_yaml["region_code_gt"]
+            ? QString::fromUtf8(m_yaml["region_code_gt"].as<std::string>().c_str())
+            : QString();
 }
 
 inline
 void PlateFile::setRegionCode(const QString &regionCode)
 {
-    m_regionCode = regionCode;
+    if(regionCode.isEmpty())
+    {
+        if(m_yaml["region_code_gt"])
+            m_yaml.remove("region_code_gt");
+    }
+    else
+        m_yaml["region_code_gt"] = regionCode.toStdString();
 }
 
 inline
 QString PlateFile::plateNumber() const
 {
-    return m_plateNumber;
+    return m_yaml["plate_number_gt"]
+            ? QString::fromUtf8(m_yaml["plate_number_gt"].as<std::string>().c_str())
+            : QString();
 }
 
 inline
 void PlateFile::setPlateNumber(const QString &plateNumber)
 {
-    m_plateNumber = plateNumber;
+    m_yaml["plate_number_gt"] = plateNumber.toStdString();
 }
 
 inline
@@ -144,21 +187,17 @@ QPolygon PlateFile::plateCorners() const
 }
 
 inline
-void PlateFile::setPlateCorners(const QPolygon &plateCorners)
-{
-    m_plateCorners = plateCorners;
-}
-
-inline
 bool PlateFile::plateInverted() const
 {
-    return m_plateInverted;
+    return m_yaml["plate_inverted_gt"]
+            ? m_yaml["plate_inverted_gt"].as<bool>()
+            : false;
 }
 
 inline
 void PlateFile::setPlateInverted(bool plateInverted)
 {
-    m_plateInverted = plateInverted;
+    m_yaml["plate_inverted_gt"] = plateInverted;
 }
 
 #endif // PLATEFILE_H

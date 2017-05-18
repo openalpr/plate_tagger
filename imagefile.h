@@ -38,9 +38,14 @@ public:
     PlateFileList plates() const;
 
     /*
+     *  Add new non-autonumbered plate
+     */
+    void addPlate(const PlateFile &plateFile);
+
+    /*
      *  Update plates
      */
-    void setPlates(const PlateFileList &plateFileList);
+    void setPlates(const PlateFileList &newPlateFileList);
 
     /*
      *  Image has been moved and its methods and properties
