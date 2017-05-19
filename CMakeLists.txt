@@ -52,8 +52,44 @@ squeezedlabel.cpp
 threadedimageloader.cpp
 utils.cpp
 qprogressindicator/QProgressIndicator.cpp
+
+extra/yaml-cpp/src/nodeevents.cpp
+extra/yaml-cpp/src/exceptions.cpp
+extra/yaml-cpp/src/nodebuilder.cpp
+extra/yaml-cpp/src/contrib/graphbuilder.cpp
+extra/yaml-cpp/src/contrib/graphbuilderadapter.cpp
+extra/yaml-cpp/src/exp.cpp
+extra/yaml-cpp/src/binary.cpp
+extra/yaml-cpp/src/null.cpp
+extra/yaml-cpp/src/parser.cpp
+extra/yaml-cpp/src/convert.cpp
+extra/yaml-cpp/src/scantag.cpp
+extra/yaml-cpp/src/singledocparser.cpp
+extra/yaml-cpp/src/scanner.cpp
+extra/yaml-cpp/src/directives.cpp
+extra/yaml-cpp/src/emitterstate.cpp
+extra/yaml-cpp/src/node_data.cpp
+extra/yaml-cpp/src/scanscalar.cpp
+extra/yaml-cpp/src/scantoken.cpp
+extra/yaml-cpp/src/node.cpp
+extra/yaml-cpp/src/regex_yaml.cpp
+extra/yaml-cpp/src/emitfromevents.cpp
+extra/yaml-cpp/src/emitterutils.cpp
+extra/yaml-cpp/src/tag.cpp
+extra/yaml-cpp/src/memory.cpp
+extra/yaml-cpp/src/simplekey.cpp
+extra/yaml-cpp/src/ostream_wrapper.cpp
+extra/yaml-cpp/src/emit.cpp
+extra/yaml-cpp/src/emitter.cpp
+extra/yaml-cpp/src/stream.cpp
+extra/yaml-cpp/src/parse.cpp
+
 )
 
-include_directories(${CMAKE_SOURCE_DIR}/qprogressindicator)
+include_directories(
+  ${CMAKE_SOURCE_DIR}/qprogressindicator
+  ${CMAKE_SOURCE_DIR}/extra/yaml-cpp/include/
+)
+
 # Use the Widgets module from Qt 5.
 target_link_libraries(openalpr_tagger Qt5::Widgets)
