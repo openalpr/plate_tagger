@@ -1,3 +1,9 @@
+plates (1.1.0-1) unstable; urgency=medium
+
+  * Allow loading standalone non-numbered YAML files.
+
+ -- Dmitry Baryshev <dmitrymq@gmail.com>  Wed, 17 May 2017 16:35:07 +0300
+
 plates (1.0.0-1) unstable; urgency=medium
 
   * Initial release.

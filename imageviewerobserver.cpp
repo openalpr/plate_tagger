@@ -5,9 +5,7 @@
 #include "plateselector.h"
 #include "imagefile.h"
 #include "settings.h"
-
-constexpr double BOUNDING_ENLARGE_WIDTH_FACTOR = 0.15;
-constexpr double BOUNDING_ENLARGE_HEIGHT_FACTOR = 0.25;
+#include "utils.h"
 
 ImageViewerObserver::ImageViewerObserver(QWidget *parent)
     : ImageViewerBase(parent)
@@ -75,15 +73,7 @@ void ImageViewerObserver::mouseReleaseEvent(QMouseEvent *e)
 
             if(plateFile.plateCorners().containsPoint(pos, Qt::OddEvenFill))
             {
-                const QRect &boundingRect = plateFile.plateCorners().boundingRect();
-
-                // enlarge
-                m_fixedSelection = boundingRect.adjusted(-BOUNDING_ENLARGE_WIDTH_FACTOR * boundingRect.width(),
-                                                         -BOUNDING_ENLARGE_HEIGHT_FACTOR * boundingRect.height(),
-                                                         BOUNDING_ENLARGE_WIDTH_FACTOR * boundingRect.width(),
-                                                         BOUNDING_ENLARGE_HEIGHT_FACTOR * boundingRect.height());
-
-                m_fixedSelection &= image().rect();
+                m_fixedSelection = Utils::selectionForPlate(plateFile, image());
 
                 m_plateFileIndexForEditing = i;
 
@@ -202,7 +192,7 @@ void ImageViewerObserver::slotShowPlateSelector()
         return;
     }
 
-    PlateSelector selector(frame, this);
+    PlateSelector selector(frame, PlateSelector::WithDeleteButton, this);
 
     selector.setSelectionRect(m_fixedSelection);
 
@@ -240,6 +230,7 @@ void ImageViewerObserver::slotShowPlateSelector()
         plateFileList.append(newPlateFile);
         plateFile = &plateFileList.last();
     }
+    // nothing has happend, just return
     else
         return;
 
@@ -258,5 +249,6 @@ void ImageViewerObserver::slotShowPlateSelector()
 
     m_polygons = Polygons::fromPlates(m_imageFile->plates());
     m_polygons.setZoom(zoom());
+
     update();
 }

@@ -38,8 +38,11 @@ private slots:
 
 private:
     Ui::DirectoryLoader *ui;
+    enum class Step { Images, Plates } m_step;
     QDirIterator *m_iterator;
     ImageFileList m_imageFiles;
+    int m_heapPlates;
+    QStringList m_lostPlates;
 };
 
 inline

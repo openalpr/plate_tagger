@@ -6,7 +6,7 @@
 #include "utils.h"
 #include "ui_plateselector.h"
 
-PlateSelector::PlateSelector(const QImage &image, QWidget *parent)
+PlateSelector::PlateSelector(const QImage &image, DeleteButtonExistense deleteButtonExistense, QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::PlateSelector)
 {
@@ -43,6 +43,12 @@ PlateSelector::PlateSelector(const QImage &image, QWidget *parent)
                                << ui->buttonBox->button(QDialogButtonBox::Help));
 
     connect(ui->imageViewerPlateSelector, SIGNAL(dotsChanged(int)), this, SLOT(slotCheckData()));
+
+    if(deleteButtonExistense == WithoutDeleteButton)
+    {
+        ui->buttonBox->button(QDialogButtonBox::RestoreDefaults)->setEnabled(false);
+        ui->buttonBox->button(QDialogButtonBox::RestoreDefaults)->hide();
+    }
 }
 
 PlateSelector::~PlateSelector()

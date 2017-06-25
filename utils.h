@@ -10,7 +10,10 @@
 class QPushButton;
 class QPolygon;
 class QWidget;
+class QImage;
 class QRect;
+
+class PlateFile;
 
 class Utils
 {
@@ -42,6 +45,11 @@ public:
     static QStringList imageMatchingWildcard();
 
     static QPoint fitPoint(const QRect &m_referenceRect, const QPoint &_pos);
+
+    /*
+     *  Return a selection rectangle to edit the specified plate
+     */
+    static QRect selectionForPlate(const PlateFile &plateFile, const QImage &inImage);
 
     static void help(const QString &message, QWidget *parent = nullptr);
     static void message(const QString &message, QWidget *parent = nullptr);

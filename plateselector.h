@@ -22,7 +22,9 @@ class PlateSelector : public QDialog
     Q_OBJECT
 
 public:
-    explicit PlateSelector(const QImage &image, QWidget *parent = 0);
+    enum DeleteButtonExistense { WithDeleteButton, WithoutDeleteButton };
+
+    explicit PlateSelector(const QImage &image, DeleteButtonExistense deleteButtonExistense, QWidget *parent = 0);
     ~PlateSelector();
 
     /*
